@@ -12,18 +12,24 @@ end
 # Grab local IP address for the proxy
 def local_ip
   @local_ip ||= begin
+    #disable dns resolution of the ip address, or else it will hang
     orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true
 
     UDPSocket.open do |s|
+      # This is a trick to find the ip address of the last adaptor which routes the non-public route.
       s.connect "64.233.187.99", 1
       s.addr.last
     end
-  ensure
-    Socket.do_not_reverse_lookup = orig
   end
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
+
+    if Vagrant.has_plugin?("vagrant-cachier")
+        # Configure cached packages to be shared between instances of the same base box.
+        cluster.cache.scope = :box
+    end
+    
     cluster.vm.box = if ENV["ANSIBLE_RIAK_OS"] == "UBUNTU"
       "chef/ubuntu-12.04"
     elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
