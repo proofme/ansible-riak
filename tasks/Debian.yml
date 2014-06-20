@@ -12,3 +12,8 @@
 - name: set the riak ulimit
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
 
+- name: configure init script
+  template: src=etc_init_riak.j2 dest=/etc/init.d/riak
+
+- name: configure env script
+  template: src=usr_lib_riak_lib_env.sh.j2 dest=/usr/lib/riak/lib/env.sh

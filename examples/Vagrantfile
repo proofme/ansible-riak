@@ -52,8 +52,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
           ansible.inventory_path = "./hosts"
           ansible.raw_arguments = [ "-T 30" ]
 
+          package_url = if ENV["ANSIBLE_RIAK_OS"] == "UBUNTU"
+            "http://s3.amazonaws.com/builds.basho.com/riak/develop/2.0.0beta7/ubuntu/precise/riak_2.0.0beta7-1_amd64.deb"
+          elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
+            "http://s3.amazonaws.com/builds.basho.com/riak/develop/2.0.0beta7/rhel/6/riak-2.0.0beta7-1.el6.x86_64.rpm"
+          else
+            "http://s3.amazonaws.com/builds.basho.com/riak/develop/2.0.0beta7/ubuntu/precise/riak_2.0.0beta7-1_amd64.deb"
+          end
+
           ansible.extra_vars = {
             riak_iface: "eth1",
+            riak_custom_package: "#{package_url}"
           }
 
           ansible.verbose = "vvvv"
