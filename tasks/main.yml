@@ -49,7 +49,7 @@
   service: name=riak enabled=yes state=started
 
 - name: Wait for Riak to start up before continuing
-  wait_for: delay=5 timeout=30 host={{ inventory_hostname }} port={{ riak_pb_port }} state=started
+  wait_for: delay=5 timeout=30 host={{ ansible_fqdn }} port={{ riak_pb_port }} state=started
 
 - name: Bucket operations
   include: buckets.yml
