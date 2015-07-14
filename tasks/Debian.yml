@@ -9,11 +9,18 @@
   with_items:
   - curl
 
-- name: Install package cloud repo
-  shell: "curl -L https://packagecloud.io/install/repositories/basho/riak/script.deb.sh | sudo bash"
-  args:
-    creates: /etc/apt/sources.list.d/basho_riak.list
-  tags: Debian
+  
+# not work on Jessie  
+#- name: Install package cloud repo
+#  shell: "curl -L https://packagecloud.io/install/repositories/basho/riak/script.deb.sh | sudo bash"
+#  args:
+#    creates: /etc/apt/sources.list.d/basho_riak.list
+#  tags: Debian
+# do it manual:
+
+- apt_key: url=https://packagecloud.io/gpg.key state=present
+- apt_repository: repo='deb https://packagecloud.io/basho/riak/debian/ wheezy main' state=present
+
 
 - name: Install Riak for Debian
   apt: name={{ riak_package }} state=present  update_cache=yes cache_valid_time=3600
